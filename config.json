@@ -1,4 +1,4 @@
 {
-  "version": 1,
-  "mode": "CHAT"
+  "mode": "CHAT",
+  "show_ip": true
 }
