@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Control Panel</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #0ff;
+      font-family: monospace;
+    }
+    button {
+      background: black;
+      color: #0ff;
+      border: 1px solid #0ff;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    .box {
+      border: 1px solid #0ff;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>⚡ CLIENT CONTROL PANEL</h1>
+
+  <div class="box">
+    <h3>Mode</h3>
+    <button onclick="setMode('CHAT')">CHAT</button>
+    <button onclick="setMode('NONE')">OFF</button>
+  </div>
+
+  <div class="box">
+    <h3>Features</h3>
+    <button onclick="toggleIP(true)">SHOW IP ON</button>
+    <button onclick="toggleIP(false)">SHOW IP OFF</button>
+  </div>
+
+  <div class="box">
+    <h3>Clients Online</h3>
+    <pre id="clients"></pre>
+  </div>
+
+<script>
+const repo = "USERNAME/REPO";
+const token = "YOUR_GITHUB_TOKEN";
+
+async function updateConfig(newConfig) {
+  const url = `https://api.github.com/repos/${repo}/contents/config.json`;
+
+  const res = await fetch(url, {
+    headers: { Authorization: `token ${token}` }
+  });
+
+  const data = await res.json();
+  const sha = data.sha;
+
+  await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `token ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: "update config",
+      content: btoa(JSON.stringify(newConfig, null, 2)),
+      sha: sha
+    })
+  });
+}
+
+function setMode(mode) {
+  updateConfig({ mode: mode, show_ip: false });
+}
+
+function toggleIP(val) {
+  updateConfig({ mode: "CHAT", show_ip: val });
+}
+</script>
+
+</body>
+</html>
